@@ -2,7 +2,7 @@ FROM docker.io/tiredofit/nginx-php-fpm:debian-7.4-bullseye
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ### Default Runtime Environment Variables
-ENV OSTICKET_VERSION=v1.15.4 \
+ENV OSTICKET_VERSION=v1.17 \
     DB_PREFIX=ost_ \
     DB_PORT=3306 \
     CRON_INTERVAL=10 \
@@ -33,6 +33,8 @@ RUN set -x && \
                   tar \
                   wget \
                   zlib1g \
+                  unzip \
+                  p7zip-full \
                   && \
     \
 ### Download & Prepare OSTicket for Install
@@ -49,9 +51,11 @@ RUN set -x && \
     \
 # Setup Official Plugins
     git clone -b develop https://github.com/osTicket/osTicket-plugins /usr/src/plugins
-RUN set -x && \    cd /usr/src/plugins && \
+RUN set -x && \
+    cd /usr/src/plugins && \
     php make.php hydrate && \
-    for plugin in $(find * -maxdepth 0 -type d ! -path doc ! -path lib); do cp -r ${plugin} /assets/install/include/plugins; done; \
+    php -dphar.readonly=0 make.php build /usr/src/plugins && \
+    for plugin in $(find * -maxdepth 0 -type d ! -path doc ! -path lib); do cp -r ${plugin} /assets/install/include/plugins; done && \
     cp -R /usr/src/plugins/*.phar /assets/install/include/plugins/ && \
     cd / && \
     \
