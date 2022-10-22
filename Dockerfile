@@ -1,5 +1,5 @@
-FROM docker.io/tiredofit/nginx-php-fpm:debian-7.4-bullseye
-LABEL maintainer="Dave Conroy (github.com/tiredofit)"
+FROM docker.io/tiredofit/nginx-php-fpm:debian-8.0-bullseye
+LABEL maintainer="Pavel Milanes (github.com/stdevPavelmc)"
 
 ### Default Runtime Environment Variables
 ENV OSTICKET_VERSION=v1.17 \
